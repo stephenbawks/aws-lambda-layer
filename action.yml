@@ -2,7 +2,7 @@ name: AWS SSM Parameters
 description: Checks to see if exists, if not it will create it. If exist, it will check to see that is current and up to date.
 
 branding:
-  icon: refresh-cw
+  icon: layers
   color: orange
 
 inputs:

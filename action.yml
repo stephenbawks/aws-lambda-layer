@@ -1,5 +1,5 @@
-name: AWS SSM Parameters
-description: Checks to see if exists, if not it will create it. If exist, it will check to see that is current and up to date.
+name: AWS Lambda Layer Builder
+description: Creates an AWS Lambda Layer and uploads layer to a S3 bucket.  Add permisions to the Lambda Layer to grant access to other accounts. 
 
 branding:
   icon: layers

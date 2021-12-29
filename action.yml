@@ -70,10 +70,11 @@ runs:
         echo "::set-output name=layer_arn::$(echo $response | jq -r '.LayerArn')"
         echo "::set-output name=layer_name::${{ inputs.layer-name }}"
     
-      - uses: actions/upload-artifact@v2
-        with:
-          name: lambda-layer
-          path: ./${{ inputs.layer-directory }}/lambda_layer.zip
+    - uses: actions/upload-artifact@v2
+      with:
+        name: lambda-layer
+        path: ./${{ inputs.layer-directory }}/lambda_layer.zip
+        retention-days: 5
 
     - name: Lambda Layer Permission
       shell: bash

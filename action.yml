@@ -6,10 +6,10 @@ branding:
   color: orange
 
 inputs:
-  layern-name:
+  layer-name:
     description: Name for the Lambda Layer
     required: true
-  layerdirectory:
+  layer-directory:
     description: Working directory in repository where requirements file exists
     required: true
   runtime:

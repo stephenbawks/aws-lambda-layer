@@ -57,7 +57,7 @@ runs:
       run: |
         DATE=$(date +"%d_%m_%Y")
         FOLDER_PATH="${{ inputs.prefix-folder-path }}"
-        FORMATTED_LAYER_NAME="${{ inputs.layer-name }}-${DATE}"
+        FORMATTED_LAYER_NAME="${{ inputs.layer-name }}-${DATE}-${RANDOM}"
         aws s3 cp ./lambda_layer.zip s3://${{ inputs.bucketname }}/${{ inputs.prefix-folder-path }}/${FORMATTED_LAYER_NAME}.zip
         RESPONSE=$(aws lambda publish-layer-version --layer-name ${FORMATTED_LAYER_NAME} \
         --description "${{ inputs.layer-name }} Layer" \

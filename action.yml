@@ -32,24 +32,21 @@ runs:
 
     - name: Install Python Requirements
       shell: bash
+      working-directory: ${{ inputs.layer-directory }}
       run: |
         if [ ${{ inputs.runtime }} -eq "python" ]
         then
+          echo "Building Python Layer"
           mkdir -p python && pip install -r requirements.txt -t ./python
           zip -r lambda_layer.zip ./python
         elif [ ${{ inputs.runtime }} -eq "node" ]
         then
+          echo "Building Node Layer"
           mkdir -p nodejs/node_modules && npm install -r requirements.txt -t ./nodejs/node_modules
           zip -r lambda_layer.zip ./nodejs/node_modules
         else
           echo "Something else was specified for runtime"
         fi
-      working-directory: ${{ inputs.layer-directory }}
-
-    # - uses: actions/upload-artifact@v2
-    #   with:
-    #     name: lambda-layer
-    #     path: ./${{ inputs.layer-directory }}/lambda_layer.zip
 
     - name: Installing boto3
       shell: bash
@@ -62,16 +59,21 @@ runs:
       run: |
         DATE=$(date +"%d_%m_%Y")
         FOLDER_PATH="${{ inputs.prefix-folder-path }}"
-        LAYER_NAME="${{ inputs.layern-name }}-${DATE}"
+        LAYER_NAME="${{ inputs.layer-name }}-${DATE}"
         aws s3 cp ./lambda_layer.zip s3://${{ inputs.bucketname }}/${{ inputs.prefix-folder-path }}/lambda_layer.zip
-        response=$(aws lambda publish-layer-version --layer-name ${{ inputs.layern-name }} \
-        --description "${{ inputs.layern-name }} Layer" \
+        response=$(aws lambda publish-layer-version --layer-name ${{ inputs.layer-name }} \
+        --description "${{ inputs.layer-name }} Layer" \
         --content S3Bucket=${{ inputs.bucketname }},S3Key=${{ inputs.prefix-folder-path }}/lambda_layer.zip
 
         layer_version=$(echo $response | jq -r '.Version')
         echo "::set-output name=layer_version::$(echo $response | jq -r '.Version')"
         echo "::set-output name=layer_arn::$(echo $response | jq -r '.LayerArn')"
-        echo "::set-output name=layer_name::${{ inputs.layern-name }}"
+        echo "::set-output name=layer_name::${{ inputs.layer-name }}"
+    
+      - uses: actions/upload-artifact@v2
+        with:
+          name: lambda-layer
+          path: ./${{ inputs.layer-directory }}/lambda_layer.zip
 
     - name: Lambda Layer Permission
       shell: bash

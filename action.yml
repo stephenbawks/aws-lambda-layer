@@ -54,7 +54,6 @@ runs:
     - name: Installing boto3
       shell: bash
       run: pip3 install boto3
-      shell: bash
 
     - name: Upload Zip and Create Layer
       shell: bash

@@ -57,15 +57,15 @@ runs:
       run: |
         DATE=$(date +"%d_%m_%Y")
         FOLDER_PATH="${{ inputs.prefix-folder-path }}"
-        LAYER_NAME="${{ inputs.layer-name }}-${DATE}"
+        FORMATTED_LAYER_NAME="${{ inputs.layer-name }}-${DATE}"
         aws s3 cp ./lambda_layer.zip s3://${{ inputs.bucketname }}/${{ inputs.prefix-folder-path }}/lambda_layer.zip
-        response=$(aws lambda publish-layer-version --layer-name ${{ inputs.layer-name }} \
+        response=$(aws lambda publish-layer-version --layer-name ${FORMATTED_LAYER_NAME} \
         --description "${{ inputs.layer-name }} Layer" \
         --content S3Bucket=${{ inputs.bucketname }},S3Key=${{ inputs.prefix-folder-path }}/lambda_layer.zip)
 
         echo "::set-output name=layer_version::$(echo $response | jq -r '.Version')"
         echo "::set-output name=layer_arn::$(echo $response | jq -r '.LayerArn')"
-        echo "::set-output name=layer_name::${{ inputs.layer-name }}"
+        echo "::set-output name=layer_name::${FORMATTED_LAYER_NAME}"
     
     - uses: actions/upload-artifact@v2
       with:

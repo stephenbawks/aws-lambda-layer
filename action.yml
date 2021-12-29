@@ -75,4 +75,11 @@ runs:
 
     - name: Lambda Layer Permission
       shell: bash
-      run: aws lambda add-layer-version-permission --layer-name ${{ steps.build-layer.outputs.layer_name }} --statement-id "GrantAccountAccess_$(date +%s)" --action lambda:GetLayerVersion --principal ${{ inputs.principal }} --version-number ${{ steps.build-layer.outputs.layer_version }}
+      run: |
+      echo $(aws --version)
+      DATE_SUFFIX=$(date +%s)
+      aws lambda add-layer-version-permission --layer-name ${{ steps.build-layer.outputs.layer_name }} \
+      --statement-id "GrantAccountAccess-${DATE_SUFFIX}" \
+      --action lambda:GetLayerVersion \
+      --principal ${{ inputs.principal }} \
+      --version-number ${{ steps.build-layer.outputs.layer_version }}

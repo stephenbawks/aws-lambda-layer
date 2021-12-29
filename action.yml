@@ -35,7 +35,7 @@ runs:
       run: |
         mkdir -p python && pip install -r requirements.txt -t ./python
         zip -r lambda_layer.zip ./python
-      working-directory: ${{ inputs.layerdirectory }}
+      working-directory: ${{ inputs.layer-directory }}
       if: ${{ inputs.runtime }} == "python"
 
     - name: Install Node Requirements
@@ -43,13 +43,13 @@ runs:
       run: |
         mkdir -p nodejs/node_modules && npm install -r requirements.txt -t ./nodejs/node_modules
         zip -r lambda_layer.zip ./nodejs/node_modules
-      working-directory: ${{ inputs.layerdirectory }}
+      working-directory: ${{ inputs.layer-directory }}
       if: ${{ inputs.runtime }} == "node"
 
     # - uses: actions/upload-artifact@v2
     #   with:
     #     name: lambda-layer
-    #     path: ./${{ inputs.layerdirectory }}/lambda_layer.zip
+    #     path: ./${{ inputs.layer-directory }}/lambda_layer.zip
 
     - name: Installing boto3
       shell: bash
@@ -58,7 +58,7 @@ runs:
     - name: Upload Zip and Create Layer
       shell: bash
       id: build-layer
-      working-directory: ${{ inputs.layerdirectory }}
+      working-directory: ${{ inputs.layer-directory }}
       run: |
         DATE=$(date +"%d_%m_%Y")
         FOLDER_PATH="${{ inputs.prefix-folder-path }}"

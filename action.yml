@@ -34,12 +34,12 @@ runs:
       shell: bash
       working-directory: ${{ inputs.layer-directory }}
       run: |
-        if [ ${{ inputs.runtime }} -eq "python" ]
+        if [ "${{ inputs.runtime }}" -eq "python" ]
         then
           echo "Building Python Layer"
           mkdir -p python && pip install -r requirements.txt -t ./python
           zip -r lambda_layer.zip ./python
-        elif [ ${{ inputs.runtime }} -eq "node" ]
+        elif [ "${{ inputs.runtime }}" -eq "node" ]
         then
           echo "Building Node Layer"
           mkdir -p nodejs/node_modules && npm install -r requirements.txt -t ./nodejs/node_modules

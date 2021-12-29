@@ -76,7 +76,9 @@ runs:
     - name: Lambda Layer Permission
       shell: bash
       run: |
-        ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
-        aws lambda add-layer-version-permission --layer-name ${{ steps.build-layer.outputs.layer_name }} \
-        --version-number ${{ steps.build-layer.outputs.layer_version }} --action lambda:GetLayerVersion \
-        --statement-id GrantAccountAccess --principal ${{ inputs.principal }}
+        aws lambda add-layer-version-permission \
+          --layer-name ${{ steps.build-layer.outputs.layer_name }} \
+          --statement-id GrantAccountAccess-$(date +%s) \
+          --action lambda:GetLayerVersion \
+          --principal ${{ inputs.principal }} \
+          --version-number ${{ steps.build-layer.outputs.layer_version }}

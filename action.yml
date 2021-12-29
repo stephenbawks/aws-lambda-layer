@@ -58,13 +58,13 @@ runs:
         DATE=$(date +"%d_%m_%Y")
         FOLDER_PATH="${{ inputs.prefix-folder-path }}"
         FORMATTED_LAYER_NAME="${{ inputs.layer-name }}-${DATE}"
-        aws s3 cp ./lambda_layer.zip s3://${{ inputs.bucketname }}/${{ inputs.prefix-folder-path }}/lambda_layer.zip
-        response=$(aws lambda publish-layer-version --layer-name ${FORMATTED_LAYER_NAME} \
+        aws s3 cp ./lambda_layer.zip s3://${{ inputs.bucketname }}/${{ inputs.prefix-folder-path }}/${FORMATTED_LAYER_NAME}.zip
+        RESPONSE=$(aws lambda publish-layer-version --layer-name ${FORMATTED_LAYER_NAME} \
         --description "${{ inputs.layer-name }} Layer" \
-        --content S3Bucket=${{ inputs.bucketname }},S3Key=${{ inputs.prefix-folder-path }}/lambda_layer.zip)
+        --content S3Bucket=${{ inputs.bucketname }},S3Key=${{ inputs.prefix-folder-path }}/${FORMATTED_LAYER_NAME}.zip)
 
-        echo "::set-output name=layer_version::$(echo $response | jq -r '.Version')"
-        echo "::set-output name=layer_arn::$(echo $response | jq -r '.LayerArn')"
+        echo "::set-output name=layer_version::$(echo $RESPONSE | jq -r '.Version')"
+        echo "::set-output name=layer_arn::$(echo $RESPONSE | jq -r '.LayerArn')"
         echo "::set-output name=layer_name::${FORMATTED_LAYER_NAME}"
     
     - uses: actions/upload-artifact@v2
@@ -76,10 +76,8 @@ runs:
     - name: Lambda Layer Permission
       shell: bash
       run: |
-        echo "$(aws --version)"
-        DATE_SUFFIX="$(date +%s)"
         aws lambda add-layer-version-permission --layer-name "${{ steps.build-layer.outputs.layer_name }}" \
-        --statement-id "GrantAccountAccess-${DATE_SUFFIX}" \
+        --statement-id "GrantAccountAccess-${RANDOM}" \
         --action lambda:GetLayerVersion \
         --principal "${{ inputs.principal }}" \
         --version-number "${{ steps.build-layer.outputs.layer_version }}"

@@ -50,6 +50,8 @@ The default path schema for the layer looks like the following:
 And as an example would result in a path that looks like the following:
 * `s3://my-s3-bucket-name-goes-here/beta/my-awesome-layer-name-29-12-2021-34522.zip`
 
+The `principal` variable is the account number you want to share the layer with.  If you put "*" here that will share it to the world. 
+
 ## Layer Paths for each Lambda runtime
 For each Lambda runtime, the PATH variable includes specific folders in the /opt directory. If you define the same folder structure in your layer .zip file archive, your function code can access the layer content without the need to specify the path.
 

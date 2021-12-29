@@ -31,6 +31,7 @@ runs:
   steps:
 
     - name: Install Python Requirements
+      shell: bash
       run: |
         mkdir -p python && pip install -r requirements.txt -t ./python
         zip -r lambda_layer.zip ./python
@@ -38,6 +39,7 @@ runs:
       if: ${{ inputs.runtime }} == "python"
 
     - name: Install Node Requirements
+      shell: bash
       run: |
         mkdir -p nodejs/node_modules && npm install -r requirements.txt -t ./nodejs/node_modules
         zip -r lambda_layer.zip ./nodejs/node_modules
@@ -50,20 +52,22 @@ runs:
     #     path: ./${{ inputs.layerdirectory }}/lambda_layer.zip
 
     - name: Installing boto3
+      shell: bash
       run: pip3 install boto3
       shell: bash
 
     - name: Upload Zip and Create Layer
-        id: build-layer
-        working-directory: ${{ inputs.layerdirectory }}
-        run: |
-          DATE=$(date +"%d_%m_%Y")
-          FOLDER_PATH="${{ inputs.prefix-folder-path }}"
-          LAYER_NAME="${{ inputs.layern-name }}-${DATE}"
-          aws s3 cp ./lambda_layer.zip s3://${{ inputs.bucketname }}/${{ inputs.prefix-folder-path }}/lambda_layer.zip
-          response=$(aws lambda publish-layer-version --layer-name ${{ inputs.layern-name }} \
-          --description "${{ inputs.layern-name }} Layer" \
-          --content S3Bucket=${{ inputs.bucketname }},S3Key=${{ inputs.prefix-folder-path }}/lambda_layer.zip
+      shell: bash
+      id: build-layer
+      working-directory: ${{ inputs.layerdirectory }}
+      run: |
+        DATE=$(date +"%d_%m_%Y")
+        FOLDER_PATH="${{ inputs.prefix-folder-path }}"
+        LAYER_NAME="${{ inputs.layern-name }}-${DATE}"
+        aws s3 cp ./lambda_layer.zip s3://${{ inputs.bucketname }}/${{ inputs.prefix-folder-path }}/lambda_layer.zip
+        response=$(aws lambda publish-layer-version --layer-name ${{ inputs.layern-name }} \
+        --description "${{ inputs.layern-name }} Layer" \
+        --content S3Bucket=${{ inputs.bucketname }},S3Key=${{ inputs.prefix-folder-path }}/lambda_layer.zip
 
         layer_version=$(echo $response | jq -r '.Version')
         echo "::set-output name=layer_version::$(echo $response | jq -r '.Version')"
@@ -71,8 +75,9 @@ runs:
         echo "::set-output name=layer_name::${{ inputs.layern-name }}"
 
     - name: Lambda Layer Permission
-        run: |
-          ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
-          aws lambda add-layer-version-permission --layer-name ${{ steps.build-layer.outputs.layer_name }} \
-          --version-number ${{ steps.build-layer.outputs.layer_version }} --action lambda:GetLayerVersion \
-          --statement-id GrantAccountAccess --principal ${{ inputs.principal }}
+      shell: bash
+      run: |
+        ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
+        aws lambda add-layer-version-permission --layer-name ${{ steps.build-layer.outputs.layer_name }} \
+        --version-number ${{ steps.build-layer.outputs.layer_version }} --action lambda:GetLayerVersion \
+        --statement-id GrantAccountAccess --principal ${{ inputs.principal }}

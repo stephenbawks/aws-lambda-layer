@@ -40,7 +40,12 @@ runs:
           zip -r lambda_layer.zip ./python
         elif [ "${{ inputs.runtime }}" = "node" ]; then
           echo "Building Node Layer"
-          mkdir -p nodejs/node_modules && npm install -r requirements.txt -t ./nodejs/node_modules
+          mkdir -p nodejs/node_modules  && cd nodejs
+          npm init -y
+          while read p; do 
+              npm install --save "$p"
+          done < ../requirements.txt
+          cd ..
           zip -r lambda_layer.zip ./nodejs/node_modules
         else
           echo "Something else was specified for runtime"

@@ -23,8 +23,8 @@ inputs:
   principal:
     description: An AWS Account ID to grant layer usage permissions to.  
     required: true
-  # compatible-runtimes:
-  #   description: A list of compatible function runtimes . Used for filtering with ListLayers and ListLayerVersions.
+  compatible-runtimes:
+    description: A list of compatible function runtimes. Used for filtering with ListLayers and ListLayerVersions.
 
 runs:
   using: 'composite'

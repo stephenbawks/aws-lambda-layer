@@ -19,8 +19,7 @@ inputs:
     description: AWS S3 Bucket Name where layer will be uploaded
     required: true
   prefix-folder-path:
-    description: A prefix that will be used for a folder path inside the S3 bucket
-    required: true
+    description: An optional prefix that will be used for a folder path inside the S3 bucket
   principal:
     description: An AWS Account ID to grant layer usage permissions to.  
     required: true
@@ -59,7 +58,7 @@ runs:
         working-directory: ${{ inputs.layerdirectory }}
         run: |
           DATE=$(date +"%d_%m_%Y")
-          FOLDER_PATH="${{ inputs.prefix-folder-path }}/${DATE}"
+          FOLDER_PATH="${{ inputs.prefix-folder-path }}"
           LAYER_NAME="${{ inputs.layern-name }}-${DATE}"
           aws s3 cp ./lambda_layer.zip s3://${{ inputs.bucketname }}/${{ inputs.prefix-folder-path }}/lambda_layer.zip
           response=$(aws lambda publish-layer-version --layer-name ${{ inputs.layern-name }} \

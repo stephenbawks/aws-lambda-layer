@@ -33,18 +33,18 @@ runs:
     - name: Install Python Requirements
       shell: bash
       run: |
-        mkdir -p python && pip install -r requirements.txt -t ./python
-        zip -r lambda_layer.zip ./python
+        if [ ${{ inputs.runtime }} -eq "python" ]
+        then
+          mkdir -p python && pip install -r requirements.txt -t ./python
+          zip -r lambda_layer.zip ./python
+        elif [ ${{ inputs.runtime }} -eq "node" ]
+        then
+          mkdir -p nodejs/node_modules && npm install -r requirements.txt -t ./nodejs/node_modules
+          zip -r lambda_layer.zip ./nodejs/node_modules
+        else
+          echo "Something else was specified for runtime"
+        fi
       working-directory: ${{ inputs.layer-directory }}
-      if: ${{ inputs.runtime }} == "python"
-
-    - name: Install Node Requirements
-      shell: bash
-      run: |
-        mkdir -p nodejs/node_modules && npm install -r requirements.txt -t ./nodejs/node_modules
-        zip -r lambda_layer.zip ./nodejs/node_modules
-      working-directory: ${{ inputs.layer-directory }}
-      if: ${{ inputs.runtime }} == "node"
 
     # - uses: actions/upload-artifact@v2
     #   with:

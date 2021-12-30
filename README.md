@@ -10,7 +10,8 @@ Created this action to save on all the extra code it requires in a Github Worflo
 
 
 ## How To Use This Action
-Currently this option takes three different inputs/arguments. Two of them are required and one is optional.
+Using this action requires you to add a block of code to your Github workflow.  
+
 
 ### Inputs
 | Name                 | Type   | Required | Description                                                                               |

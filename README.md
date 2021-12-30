@@ -64,6 +64,14 @@ The following table lists the folder paths that each runtime supports and the di
 
 ## Example Workflow
 
-There is also an [example Github workflow](./example/workflow/example-worfklow.yml) file you can check out here to get yourself started quickly.
+There is also some example file you can check out here to get yourself started quickly.
+
+| Example                 | Link                                                    |
+| ----------------------- | ------------------------------------------------------- | 
+| Github Workflow         | [Link](./example/workflow/example-worfklow.yml)         |
+| Node Requirements       | [Link](./example/requirements/node-requirements.txt)    |
+| Python Requirements     | [Link](./example/requirements/python-requirements.txt)  |
+
+
 
 

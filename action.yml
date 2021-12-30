@@ -1,5 +1,5 @@
 name: AWS Lambda Layer Builder
-description: Creates an AWS Lambda Layer and uploads layer to a S3 bucket.  Add permisions to the Lambda Layer to grant access to other accounts. 
+description: Action will create/publish an AWS Lambda Layer from your GitHub Workflow. Does the undifferentiated heavy lifting for you. 
 
 # Including library dependencies in a layer
 # https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html#configuration-layers-path

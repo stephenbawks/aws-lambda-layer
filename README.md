@@ -6,7 +6,7 @@ Lambda layers provide a convenient way to package libraries and other dependenci
 
 A layer is a .zip file archive that can contain additional code or data. A layer can contain libraries, a custom runtime, data, or configuration files. Layers promote code sharing and separation of responsibilities so that you can iterate faster on writing business logic.
 
-Created this action to save on all the extra code it requires in a Github Worflow to create and publish a layer.  This will do all the undifferentiated heavy lifting for you.
+Created this action to save on all the extra code that is required in a GitHub Workflow to create and publish a layer.  This will do all the undifferentiated heavy lifting for you.
 
 
 ## How To Use This Action

@@ -62,9 +62,9 @@ The following table lists the folder paths that each runtime supports and the di
 | `node`               | `nodejs/node_modules` |
 | `python`             | `python`              |
 
-## Example Workflow
+## Examples
 
-There is also some example file you can check out here to get yourself started quickly.
+There is also some example requirements file as well as a Github Workflow file you can check out here to get yourself started quickly.
 
 | Example                 | Link                                                    |
 | ----------------------- | ------------------------------------------------------- | 

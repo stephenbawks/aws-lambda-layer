@@ -40,7 +40,7 @@ As as emample, suppose you want to create an AWS Lambda Layer for your lambda fu
 ```
 The `layer-name` can be whatever you want to call your layer.  This is unique to you of course and the layer name can contain only letters, numbers, hyphens, and underscores.
 
-The `layer directory` is more opinionated in its layout.  In this example, in the root of your repository you would have a directory that is called `layer` and under that directory it would contain your `requirements.txt` file with your dependencies you want to bundle up in the layer.  The action is also using this same directory as a working directory to download your requirements and then created the zip file that is used for the layer.  We want to keep it segmented so that its not pulling extra files/folders that accidently get added to your layer.  
+The `layer-directory` is more opinionated in its layout.  In this example, in the root of your repository you would have a directory that is called `layer` and under that directory it would contain your `requirements.txt` file with your dependencies you want to bundle up in the layer.  The action is also using this same directory as a working directory to download your requirements and then created the zip file that is used for the layer.  We want to keep it segmented so that its not pulling extra files/folders that accidently get added to your layer.  
 
 The `runtime` only accepts `node` and `python` at this time.  More to be added later.
 

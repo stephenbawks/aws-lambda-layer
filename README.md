@@ -6,6 +6,9 @@ Lambda layers provide a convenient way to package libraries and other dependenci
 
 A layer is a .zip file archive that can contain additional code or data. A layer can contain libraries, a custom runtime, data, or configuration files. Layers promote code sharing and separation of responsibilities so that you can iterate faster on writing business logic.
 
+Created this action to save on all the extra code it requires in a Github Worflow to create and publish a layer.  This will do all the undifferentiated heavy lifting for you.
+
+
 ## How To Use This Action
 Currently this option takes three different inputs/arguments. Two of them are required and one is optional.
 
@@ -19,7 +22,7 @@ Currently this option takes three different inputs/arguments. Two of them are re
 | `prefix-folder-path` | string | No       | (Optional) An optional prefix that will be used for a folder path inside the S3 bucket    |
 | `principal`          | string | Yes      | An AWS Account ID to grant layer usage permissions to                                     |
 
-## Examples
+## Getting Started
 
 As as emample, suppose you want to create an AWS Lambda Layer for your lambda function.  You can see in the example below some sameple values and they can be shown in an example below for directory layout.  
 

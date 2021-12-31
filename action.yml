@@ -7,6 +7,9 @@ description: Action will create/publish an AWS Lambda Layer from your GitHub Wor
 # Lambda Runtimes
 # https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
 
+# Including library dependencies in a layer
+# https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html#configuration-layers-path
+
 
 branding:
   icon: layers
@@ -43,7 +46,7 @@ runs:
       run: |
         if [ "${{ inputs.runtime }}" = "python" ]; then
           echo "Building Python Layer"
-          mkdir -p python && pip install -r requirements.txt -t ./python
+          mkdir -p python && pip3 install -r requirements.txt -t ./python
           zip -r lambda_layer.zip ./python
         elif [ "${{ inputs.runtime }}" = "node" ]; then
           echo "Building Node Layer"

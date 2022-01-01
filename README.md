@@ -56,6 +56,14 @@ And as an example would result in a path that looks like the following:
 
 The `principal` variable is the account number you want to share the layer with.  If you put "*" here that will share it to the world. 
 
+### Resulting Layer Name
+
+The resulting layer name will look like the following.
+
+
+arn:aws:lambda:`<AWS_REGION>`:`<AWS_ACCOUNT_ID>`:layer:`<layer-name>`-`<mm-dd-yyy>`:`<layer_version>`
+
+
 ## Layer Paths for each Lambda runtime
 For each Lambda runtime, the PATH variable includes specific folders in the /opt directory. If you define the same folder structure in your layer .zip file archive, your function code can access the layer content without the need to specify the path.
 

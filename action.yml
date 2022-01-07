@@ -35,6 +35,8 @@ inputs:
     required: true
   compatible-runtimes:
     description: A list of compatible function runtimes. Used for filtering with ListLayers and ListLayerVersions.
+  extra-layer-regions:
+    description:  A comma seperated list of regions you want to deploy this region to.
 
 runs:
   using: 'composite'
@@ -74,14 +76,48 @@ runs:
         FOLDER_PATH="${{ inputs.prefix-folder-path }}"
         FORMATTED_LAYER_NAME="${{ inputs.layer-name }}-${DATE}"
         FORMATTED_ZIP="${FORMATTED_LAYER_NAME}-${RANDOM}.zip"
+
+        if [ -z ${{ inputs.extra-layer-regions }} ]; then 
+          echo "Layer will only be deployed to default region.";
+          ADDITIONAL_LAYER_REGIONS=false
+        else
+          echo "Layer will be deployed to the additional regions: ${{ inputs.extra-layer-regions }}";
+          ADDITIONAL_LAYER_REGIONS=true
+        fi
+
         aws s3 cp ./lambda_layer.zip s3://${{ inputs.bucketname }}/${{ inputs.prefix-folder-path }}/${FORMATTED_ZIP}
+
         RESPONSE=$(aws lambda publish-layer-version --layer-name ${FORMATTED_LAYER_NAME} \
         --description "${{ inputs.layer-name }} Layer" \
         --content S3Bucket=${{ inputs.bucketname }},S3Key=${{ inputs.prefix-folder-path }}/${FORMATTED_ZIP})
 
-        echo "::set-output name=layer_version::$(echo $RESPONSE | jq -r '.Version')"
-        echo "::set-output name=layer_arn::$(echo $RESPONSE | jq -r '.LayerArn')"
-        echo "::set-output name=layer_name::${FORMATTED_LAYER_NAME}"
+        LAYER_VERSION=$(echo $RESPONSE | jq -r '.Version')
+        LAYER_ARN=$(echo $RESPONSE | jq -r '.LayerArn')
+
+        aws lambda add-layer-version-permission --layer-name "${FORMATTED_LAYER_NAME}" \
+        --statement-id "GrantAccountAccess-${RANDOM}" \
+        --action lambda:GetLayerVersion \
+        --principal "${{ inputs.principal }}" \
+        --version-number "${LAYER_VERSION}"
+
+        if [ ${ADDITIONAL_LAYER_REGIONS} ]; then
+          for r in $(echo $regions | sed "s/,/ /g")
+          do
+            echo "Region: ${r}"
+            RESPONSE=$(aws lambda publish-layer-version --layer-name ${FORMATTED_LAYER_NAME} \
+            --description "${{ inputs.layer-name }} Layer" \
+            --content S3Bucket=${{ inputs.bucketname }},S3Key=${{ inputs.prefix-folder-path }}/${FORMATTED_ZIP} --region ${r})
+
+            LAYER_VERSION=$(echo $RESPONSE | jq -r '.Version')
+            LAYER_ARN=$(echo $RESPONSE | jq -r '.LayerArn')
+
+            aws lambda add-layer-version-permission --layer-name "${FORMATTED_LAYER_NAME}" \
+            --statement-id "GrantAccountAccess-${RANDOM}" \
+            --action lambda:GetLayerVersion \
+            --principal "${{ inputs.principal }}" \
+            --version-number "${LAYER_VERSION}" --region ${r}
+          done
+        fi
     
     - uses: actions/upload-artifact@v2
       with:
@@ -89,12 +125,12 @@ runs:
         path: ./${{ inputs.layer-directory }}/lambda_layer.zip
         retention-days: 5
 
-    - name: Lambda Layer Permission
-      shell: bash
-      run: |
-        aws lambda add-layer-version-permission --layer-name "${{ steps.build-layer.outputs.layer_name }}" \
-        --statement-id "GrantAccountAccess-${RANDOM}" \
-        --action lambda:GetLayerVersion \
-        --principal "${{ inputs.principal }}" \
-        --version-number "${{ steps.build-layer.outputs.layer_version }}"
+    # - name: Lambda Layer Permission
+    #   shell: bash
+    #   run: |
+    #     aws lambda add-layer-version-permission --layer-name "${{ steps.build-layer.outputs.layer_name }}" \
+    #     --statement-id "GrantAccountAccess-${RANDOM}" \
+    #     --action lambda:GetLayerVersion \
+    #     --principal "${{ inputs.principal }}" \
+    #     --version-number "${{ steps.build-layer.outputs.layer_version }}"
 

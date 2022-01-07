@@ -101,7 +101,7 @@ runs:
         --version-number "${LAYER_VERSION}"
 
         if [ ${ADDITIONAL_LAYER_REGIONS} ]; then
-          for r in $(echo $regions | sed "s/,/ /g")
+          for r in $(echo ${{ inputs.extra-layer-regions }} | sed "s/,/ /g")
           do
             echo "Deploying Layer to Region: ${r}"
             RESPONSE=$(aws lambda publish-layer-version --layer-name ${FORMATTED_LAYER_NAME} \

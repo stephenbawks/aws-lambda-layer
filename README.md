@@ -29,7 +29,7 @@ As as emample, suppose you want to create an AWS Lambda Layer for your lambda fu
 
 ```yaml
     - name: Build and Create Layer
-      uses: stephenbawks/aws-lambda-layer@v0.0.17
+      uses: stephenbawks/aws-lambda-layer@v0.1.0
       with:
         layer-name: my-awesome-layer-name
         layer-directory: layer

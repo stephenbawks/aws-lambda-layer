@@ -86,7 +86,7 @@ runs:
         echo "::set-output name=layer_arn::$(echo $RESPONSE | jq -r '.LayerArn')"
         echo "::set-output name=layer_name::${FORMATTED_LAYER_NAME}"
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: lambda-layer
         path: ./${{ inputs.layer-directory }}/lambda_layer.zip

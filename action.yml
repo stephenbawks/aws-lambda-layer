@@ -1,8 +1,9 @@
 name: AWS Lambda Layer Builder
-description: Action will create/publish an AWS Lambda Layer from your GitHub Workflow. Does the undifferentiated heavy lifting for you. 
+description: Action will create/publish an AWS Lambda Layer from your GitHub Workflow. Does the undifferentiated heavy lifting for you.
 
 # Including library dependencies in a layer
 # https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html#configuration-layers-path
+# https://awscli.amazonaws.com/v2/documentation/api/2.4.18/reference/lambda/add-layer-version-permission.html
 
 # Lambda Runtimes
 # https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
@@ -31,8 +32,10 @@ inputs:
   prefix-folder-path:
     description: An optional prefix that will be used for a folder path inside the S3 bucket
   principal:
-    description: An AWS Account ID to grant layer usage permissions to.  
+    description: An AWS Account ID to grant layer usage permissions to.
     required: true
+  organization-id:
+    description: An AWS Organization ID to grant layer usage permissions to. Principal must be "*" if this is set.
   compatible-runtimes:
     description: A list of compatible function runtimes. Used for filtering with ListLayers and ListLayerVersions.
 
@@ -45,14 +48,14 @@ runs:
       working-directory: ${{ inputs.layer-directory }}
       run: |
         if [ "${{ inputs.runtime }}" = "python" ]; then
-          echo "Building Python Layer"
+          echo "🚧 👷 Building Python Layer 🚀"
           mkdir -p python && pip3 install -r requirements.txt -t ./python
           zip -r lambda_layer.zip ./python
         elif [ "${{ inputs.runtime }}" = "node" ]; then
-          echo "Building Node Layer"
+          echo "🚧 👷 Building Node Layer 🚀"
           mkdir -p nodejs/node_modules  && cd nodejs
           npm init -y
-          while read p; do 
+          while read p; do
               npm install --save "$p"
           done < ../requirements.txt
           cd ..
@@ -82,8 +85,8 @@ runs:
         echo "::set-output name=layer_version::$(echo $RESPONSE | jq -r '.Version')"
         echo "::set-output name=layer_arn::$(echo $RESPONSE | jq -r '.LayerArn')"
         echo "::set-output name=layer_name::${FORMATTED_LAYER_NAME}"
-    
-    - uses: actions/upload-artifact@v2
+
+    - uses: actions/upload-artifact@v3
       with:
         name: lambda-layer
         path: ./${{ inputs.layer-directory }}/lambda_layer.zip
@@ -92,9 +95,17 @@ runs:
     - name: Lambda Layer Permission
       shell: bash
       run: |
-        aws lambda add-layer-version-permission --layer-name "${{ steps.build-layer.outputs.layer_name }}" \
-        --statement-id "GrantAccountAccess-${RANDOM}" \
-        --action lambda:GetLayerVersion \
-        --principal "${{ inputs.principal }}" \
-        --version-number "${{ steps.build-layer.outputs.layer_version }}"
-
+        if [ "${{ inputs.principal }}" = "*" ] && [ ! -z "${{ inputs.organization-id }}" ]; then
+          aws lambda add-layer-version-permission --layer-name ${{ steps.build-layer.outputs.layer_name }} \
+          --version-number ${{ steps.build-layer.outputs.layer_version }} \
+          --principal ${{ inputs.principal }} \
+          --organization-id ${{ inputs.organization-id }} \
+          --statement-id "GrantOrgAccess-${RANDOM}" \
+          --action lambda:GetLayerVersion
+        else
+          aws lambda add-layer-version-permission --layer-name ${{ steps.build-layer.outputs.layer_name }} \
+          --version-number ${{ steps.build-layer.outputs.layer_version }} \
+          --principal ${{ inputs.principal }} \
+          --statement-id "GrantAccountAccess-${RANDOM}" \
+          --action lambda:GetLayerVersion
+        fi

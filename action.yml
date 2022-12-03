@@ -100,12 +100,12 @@ runs:
           --version-number ${{ steps.build-layer.outputs.layer_version }} \
           --principal ${{ inputs.principal }} \
           --organization-id ${{ inputs.organization-id }} \
-          --statement-id ${{ inputs.layer-name }}-statement \
+          --statement-id "GrantOrgAccess-${RANDOM}" \
           --action lambda:GetLayerVersion
         else
           aws lambda add-layer-version-permission --layer-name ${{ steps.build-layer.outputs.layer_name }} \
           --version-number ${{ steps.build-layer.outputs.layer_version }} \
           --principal ${{ inputs.principal }} \
-          --statement-id ${{ inputs.layer-name }}-statement \
+          --statement-id "GrantAccountAccess-${RANDOM}" \
           --action lambda:GetLayerVersion
         fi

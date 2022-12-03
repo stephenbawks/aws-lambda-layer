@@ -6,8 +6,9 @@
     - [Inputs](#inputs)
   - [Getting Started](#getting-started)
     - [Share to Specific Account](#share-to-specific-account)
+    - [Share to All Accounts](#share-to-all-accounts)
     - [Share to an Organization](#share-to-an-organization)
-    - [Resulting Layer Name](#resulting-layer-name)
+  - [Resulting Layer Name](#resulting-layer-name)
   - [Layer Paths for each Lambda runtime](#layer-paths-for-each-lambda-runtime)
   - [Examples](#examples)
 
@@ -53,6 +54,20 @@ As as emample, suppose you want to create an AWS Lambda Layer for your lambda fu
         principal: "123456789101"
 ```
 
+### Share to All Accounts
+
+```yaml
+    - name: Build and Create Layer
+      uses: stephenbawks/aws-lambda-layer@v0.2.0
+      with:
+        layer-name: my-awesome-layer-name
+        layer-directory: layer
+        runtime: python
+        bucketname: my-s3-bucket-name-goes-here
+        prefix-folder-path: beta
+        principal: "*"
+```
+
 ### Share to an Organization
 
 ```yaml
@@ -88,7 +103,7 @@ The `principal` variable is the account number you want to share the layer with.
 
 The `organization-id` grants permission to all accounts in the specified organization.  The `principal` needs to be set to `*`.
 
-### Resulting Layer Name
+## Resulting Layer Name
 
 The resulting layer name will look like the following.
 
@@ -115,7 +130,3 @@ There is also some example requirements file as well as a Github Workflow file y
 | Github Workflow         | [Link](./example/workflow/example-worfklow.yml)         |
 | Node Requirements       | [Link](./example/requirements/node-requirements.txt)    |
 | Python Requirements     | [Link](./example/requirements/python-requirements.txt)  |
-
-
-
-

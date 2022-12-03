@@ -7,7 +7,7 @@
   - [Getting Started](#getting-started)
     - [Share to Specific Account](#share-to-specific-account)
     - [Share to All Accounts](#share-to-all-accounts)
-    - [Share to an Organization](#share-to-an-organization)
+    - [Share to All Accounts in an Organization](#share-to-all-accounts-in-an-organization)
   - [Resulting Layer Name](#resulting-layer-name)
   - [Layer Paths for each Lambda runtime](#layer-paths-for-each-lambda-runtime)
   - [Examples](#examples)
@@ -68,7 +68,7 @@ As as emample, suppose you want to create an AWS Lambda Layer for your lambda fu
         principal: "*"
 ```
 
-### Share to an Organization
+### Share to All Accounts in an Organization
 
 ```yaml
     - name: Build and Create Layer

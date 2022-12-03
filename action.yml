@@ -48,11 +48,11 @@ runs:
       working-directory: ${{ inputs.layer-directory }}
       run: |
         if [ "${{ inputs.runtime }}" = "python" ]; then
-          echo "Building Python Layer"
+          echo "🚧 👷 Building Python Layer 🚀"
           mkdir -p python && pip3 install -r requirements.txt -t ./python
           zip -r lambda_layer.zip ./python
         elif [ "${{ inputs.runtime }}" = "node" ]; then
-          echo "Building Node Layer"
+          echo "🚧 👷 Building Node Layer 🚀"
           mkdir -p nodejs/node_modules  && cd nodejs
           npm init -y
           while read p; do
